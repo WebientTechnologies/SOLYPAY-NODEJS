@@ -34,6 +34,7 @@ const User = new mongoose.Schema({
         id: String,
         status:String
     },
+    
     avatar :{
         public_id : {
             type:String,
