@@ -39,7 +39,7 @@ const branches = new mongoose.Schema(
     phone: {
       type: String,
       required: [true, "Phone number is required"],
-      maxlength: [20, "Phone number should not exceed 20 characters"],
+      maxlength: [20, "Phone number should not exceed 14 characters"],
     },
     currency: {
       type: String,
@@ -111,7 +111,10 @@ const branches = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-  }
+  },
+   {
+    timestamps: true,
+}
 );
 
 module.exports = mongoose.model("Branch", branches);

@@ -32,18 +32,23 @@ exports.updateBranchById = catchError(async (req, res, next) => {
   if (branch.merchantAdmin.toString() !== req.user._id.toString()) {
     return next(new ErrorHandler("Unauthorized. You cannot update a branch that doesn't belong to you.", 403));
   }
-  const updatedBranch = await Branch.findByIdAndUpdate(req.params.id, { ...req.body }, { new: true });
+  const updatedBranch = await Branch.findByIdAndUpdate(req.params.id, { ...req.body,  merchantAdmin: req.user._id}, { new: true });
   res.status(200).json({ message: "Branch updated successfully", branch: updatedBranch });
 });
 
 exports.deleteBranchById = catchError(async (req, res, next) => {
-  const branch = await Branch.findById(req.params.id);
-  if (!branch) {
-    return next(new ErrorHandler("Branch not found", 404));
-  }
-  if (branch.merchantAdmin.toString() !== req.user._id.toString()) {
-    return next(new ErrorHandler("Unauthorized. You cannot delete a branch that doesn't belong to you.", 403));
-  }
-  await branch.remove();
-  res.status(200).json({ message: "Branch deleted successfully", branch });
-});
+    const branch = await Branch.findOne({ _id: req.params.id });
+  
+    if (!branch) {
+      return next(new ErrorHandler("Branch not found", 404));
+    }
+  
+    if (branch.merchantAdmin.toString() !== req.user._id.toString()) {
+      return next(new ErrorHandler("Unauthorized. You cannot delete a branch that doesn't belong to you.", 403));
+    }
+  
+    await branch.deleteOne(); 
+  
+    res.status(200).json({ success: true, message: "Branch deleted successfully" });
+  });
+  
