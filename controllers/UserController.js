@@ -4,7 +4,6 @@ const User = require("../models/User");
 const { sendToken } = require("../utils/sendToken");
 const { emailUser } = require("../utils/emailUser");
 const crypto = require("crypto");
-const Course = require("../models/Course");
 
 exports.register = catchError(async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -187,60 +186,3 @@ exports.resetPassword = catchError(async (req, res, next) => {
 });
 
 
-exports.addToPlaylist = catchError(async (req, res, next) => {
-  const { courseId } = req.params;
-  const { user } = req.body;
-
-  const course = await Course.findById(courseId);
-  if (!course) {
-    return next(new ErrorHandler("Course not found", 404));
-  }
-
-  const existingPlaylistItem = user.playlist.find((item) => item.course.toString() && item.course.toString() === courseId);
-  if (existingPlaylistItem) {
-    return res.status(200).json({
-      success: true,
-      user,
-      message: "Course already exists in the playlist",
-    });
-  }
-  
-
-  user.playlist.push({
-    course: course._id,
-    poster: course.poster.url,
-  });
-
-  await user.save();
-
-  res.status(200).json({
-    success: true,
-    user,
-    message: "Added into playlist",
-  });
-});
-
-
-exports.removeFromPlaylist = catchError(async (req, res, next)=>{
-  const {user} = req.body;
-  const {courseId} = req.params;
-
-  const updatedPlaylist = user.playlist.filter(item => item.course.toString() !== courseId);
-  if(updatedPlaylist.length === user.playlist.length) 
-  {
-   return res.status(200).json({
-      success:true,
-      user:user,
-      message: 'Course already removed from the playlist'
-    })
-  }
-  user.playlist = updatedPlaylist;
-await user.save();
-
-  return  res.status(200).json({
-    success:true,
-    user:user,
-    message: 'Removed from playlist'
-  })
-
-})
