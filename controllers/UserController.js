@@ -65,7 +65,7 @@ exports.logout = catchError((req, res, next) => {
 });
 
 exports.getMyProfile = catchError(async (req, res, next) => {
-  const { user } = req.body;
+  const { user } = req;
   res.status(200).json({
     user,
     success: true,

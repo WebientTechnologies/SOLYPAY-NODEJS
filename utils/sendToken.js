@@ -8,9 +8,11 @@ exports.sendToken = (res, user, message , statusCode = 200, role  ) => {
         // secure: true,
         sameSite: 'none',
     }
-    res.status(201).cookie('token', token,options).json({
+    res.status(statusCode).cookie('token', token,options).json({
         success: true,
         message ,
         user,
+        token,
+        options
     });
 }
