@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
 const ErrorHandler = require("../utils/ErrorHandler");
+const { sendToken } = require('../utils/sendToken');
 
 
 exports.createUser = catchError(async(req, res) =>{
@@ -20,58 +21,23 @@ exports.createUser = catchError(async(req, res) =>{
     
 });
 
-exports.loginBranchUser = catchError(async (req,res, next) => {
 
-        const {email, password} = req.body;
-        //validation on email and password
-        if(!email || !password) {
-          return next(new ErrorHandler("PLease fill all the details carefully", 400));
-           
-        }
 
-        //check for registered user
-        let user = await BranchUser.findOne({email});
-        //if not a registered user
-        if(!user) {
-          return next(new ErrorHandler("User is not registered", 400));
-        }
-        console.log(user._id)
+exports.loginBranchUser = catchError(async (req, res, next) => {
+  const { userId, password } = req.body;
+  if (!userId || !password)
+    return next(new ErrorHandler("Please Enter All Felids", 400));
+  const user = await BranchUser.findOne({ userId }).select("+password").exec();
+  console.log({ user });
+  if (!user)
+    return next(
+      new ErrorHandler("Please enter correct email or password", 401)
+    );
+  const isPassword = await user.checkPasswordMatch(password, user);
+  if (!isPassword)
+    return next(
+      new ErrorHandler("Please enter correct email or password", 401)
+    );
 
-        const payload = {
-            email:user.email,
-            _id:user._id,
-            role:user.roles,
-        };
-        //verify password & generate a JWT token
-        if(await bcrypt.compare(password,user.password) ) {
-            //password match
-            let token =  jwt.sign(payload, 
-                                process.env.JWT_SECRET,
-                                {
-                                    expiresIn:"15d",
-                                });
-                  
-            user = user.toObject();
-            user.token = token;
-            user.password = undefined;
-
-            const options = {
-                expires: new Date( Date.now() + 15 * 24 * 60 * 60 * 1000),
-                httpOnly:true,
-                sameSite: 'none',
-                secure: true,
-            }
-
-            
-
-            res.cookie("token", token, options).status(200).json({
-                success:true,
-                token,
-                user,
-                message:'User Logged in successfully',
-            });
-        }
-        else {
-          return next(new ErrorHandler("Password Incorrect", 401));
-        }
+  sendToken(res, user, `welcome back ${user.name}`, 200);
 });

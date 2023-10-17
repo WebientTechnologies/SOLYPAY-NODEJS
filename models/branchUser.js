@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 const branchUsers = new mongoose.Schema(
     {
@@ -61,4 +63,14 @@ const branchUsers = new mongoose.Schema(
         timestamps:true
     }
 );
+
+branchUsers.methods.getJwtToken = (user)=>{
+    console.log([user])
+    return jwt.sign({_id : user._id}, process.env.JWT_SECRETE,{
+        expiresIn: '15d'
+    });
+}
+branchUsers.methods.checkPasswordMatch = async(password,user)=>{
+    return await bcrypt.compare(password, user.password);
+}
 module.exports = mongoose.model("BranchUser", branchUsers);
