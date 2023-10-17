@@ -1,6 +1,6 @@
 const { config } = require("dotenv");
 const app = require("./server");
-const userRoutes = require("./routes/UserRoutes");
+const userRoutes = require("./routes/route");
 const { ErrorMiddleware } = require("./middleware/Error");
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
