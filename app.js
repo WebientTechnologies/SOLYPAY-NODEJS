@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 config();
 
-
+require("dotenv").config();
 app.use('/api/v1', userRoutes);
 
 
