@@ -41,3 +41,13 @@ exports.loginBranchUser = catchError(async (req, res, next) => {
 
   sendToken(res, user, `welcome back ${user.name}`, 200);
 });
+
+exports.getMyUsers = catchError(async(req, res) =>{
+    const authenticatedUser = req.user;
+
+    const merchantAdmin = authenticatedUser._id;
+
+    const users = await BranchUser.find({merchantAdmin:merchantAdmin}).populate('branch').populate('roles', 'name').exec();
+    return res.status(200).json({users:users});
+
+})

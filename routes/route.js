@@ -31,10 +31,12 @@ router.delete("/branches/:id",isAuthenticated,isMerchantAdmin,  branchController
 //*****User Role Routes*****//
 router.post("/create-role", isAuthenticated,isAdmin, userRoleController.createRole );
 router.get("/get-role", isAuthenticated, userRoleController.getRole);
+router.put("/assign-role", isAuthenticated, isMerchantAdmin, userRoleController.assignRolesToBranchUser);
 
 
 //****Branch User Routes****//
 router.post("/create-branch-user", isAuthenticated, isMerchantAdmin, branchUserController.createUser);
 router.post("/login-branch-user", branchUserController.loginBranchUser);
+router.get("/get-my-user", isAuthenticated, isMerchantAdmin, branchUserController.getMyUsers);
 
 module.exports = router;
