@@ -9,9 +9,21 @@ exports.createBranch = catchError(async (req, res, next) => {
 });
 
 exports.getAllBranches = catchError(async (req, res, next) => {
-  const branches = await Branch.find({ merchantAdmin: req.user._id });
-  res.status(200).json({ branches });
-});
+    const { name, country } = req.query;
+    const query = { merchantAdmin: req.user._id };
+  
+    if (name) {
+      query.name = { $regex: new RegExp(name, "i") }; // Case-insensitive name search
+    }
+  
+    if (country) {
+      query.country = { $regex: new RegExp(country, "i") }; // Case-insensitive country search
+    }
+  
+    const branches = await Branch.find(query);
+    res.status(200).json({ branches });
+  });
+  
 
 exports.getBranchById = catchError(async (req, res, next) => {
   const branch = await Branch.findById(req.params.id);

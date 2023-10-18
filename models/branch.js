@@ -21,6 +21,12 @@ const branches = new mongoose.Schema(
       minlength: [3, "City name should be at least 3 characters long"],
       maxlength: [255, "City name should not exceed 255 characters"],
     },
+    address: {
+        type: String,
+        required: [false, "Address is not required"],
+        minlength: [3, "Address name should be at least 3 characters long"],
+        maxlength: [255, "Address name should not exceed 255 characters"],
+      },
     name: {
       type: String,
       required: [true, "Name is required"],
