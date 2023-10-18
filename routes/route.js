@@ -1,5 +1,5 @@
 const express = require('express');
-const { register,login,logout, getMyProfile, changePassword,updateProfile, resetPassword, forgetPassword,addToPlaylist,removeFromPlaylist } = require('../controllers/UserController');
+const { register,login,logout, getMyProfile, changePassword,updateProfile, resetPassword, forgetPassword,addToPlaylist,removeFromPlaylist, createMerchantUser, getAllMerchant } = require('../controllers/UserController');
 const { isAuthenticated, isMerchantAdmin, isAdmin} = require('../middleware/IsAuthenticated');
 const branchController = require("../controllers/branchController");
 const userRoleController = require("../controllers/userRoleController");
@@ -9,9 +9,11 @@ const router = express.Router();
 
 
 router.route('/register').post(register);
+router.route('/create-merchant').post(createMerchantUser);
 router.route('/login').post(login);
 router.route('/logout').get(isAuthenticated,logout);
 router.route('/me').get(isAuthenticated,getMyProfile);
+router.route('/get-all-merchant').get(isAuthenticated,isAdmin, getAllMerchant);
 router.route('/change-password').put(isAuthenticated,changePassword);
 router.route('/update-profile').put(isAuthenticated,updateProfile);
 router.route('/forget-password').post(forgetPassword);
