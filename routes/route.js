@@ -4,6 +4,7 @@ const { isAuthenticated, isMerchantAdmin, isAdmin} = require('../middleware/IsAu
 const branchController = require("../controllers/branchController");
 const userRoleController = require("../controllers/userRoleController");
 const branchUserController = require("../controllers/branchUserController");
+const currencyController = require("../controllers/currencyController");
 
 const router = express.Router();
 
@@ -40,5 +41,14 @@ router.put("/assign-role", isAuthenticated, isMerchantAdmin, userRoleController.
 router.post("/create-branch-user", isAuthenticated, isMerchantAdmin, branchUserController.createUser);
 router.post("/login-branch-user", branchUserController.loginBranchUser);
 router.get("/get-my-user", isAuthenticated, isMerchantAdmin, branchUserController.getMyUsers);
+
+
+/***********currencies routes *****************/
+router.post('/currencies', currencyController.createCurrency);
+router.get('/currencies', currencyController.getAllCurrencies);
+router.get('/currencies/:id', currencyController.getCurrencyById);
+router.put('/currencies/:id', currencyController.updateCurrencyById);
+router.delete('/currencies/:id', currencyController.deleteCurrencyById);
+
 
 module.exports = router;
