@@ -1,6 +1,7 @@
 const { catchError } = require("../middleware/CatchError");
 const ErrorHandler = require("../utils/ErrorHandler");
 const User = require("../models/User");
+const Branch = require("../models/branch");
 const { sendToken } = require("../utils/sendToken");
 const { emailUser } = require("../utils/emailUser");
 const crypto = require("crypto");
@@ -184,5 +185,47 @@ exports.resetPassword = catchError(async (req, res, next) => {
     message: `Your password has been changed`,
   });
 });
+
+exports.createMerchantUser = catchError(async (req, res, next) => {
+  const { name, email, password } = req.body;
+  // const file = req.file;
+
+  if (!name || !email || !password)
+    return next(new ErrorHandler("Please Enter All Fields", 400));
+
+  let user = await User.findOne({ email });
+
+  if (user) return next(new ErrorHandler("user already exist", 409));
+
+  // upload files on cloud
+
+  user = await User.create({
+    name,
+    email,
+    password,
+    avatar: {
+      public_id: "tempId",
+      url: "tempUrl",
+    },
+  });
+ return res.status(201).json({user});
+});
+
+exports.getAllMerchant = catchError(async(req, res, next) =>{
+  const users =  await User.find(); 
+
+  const branchesByUser = await Promise.all(users.map(async user => {
+    const branch = await Branch.findOne({ merchantAdmin: user._id });
+    return {
+      userId: user._id,
+      branch: branch ? branch : null,
+    };
+  }));
+
+  res.status(200).json({
+    success: true,
+    data: branchesByUser,
+  });
+})
 
 
