@@ -39,7 +39,7 @@ exports.loginBranchUser = catchError(async (req, res, next) => {
       new ErrorHandler("Please enter correct email or password", 401)
     );
 
-  sendToken(res, user, `welcome back ${user.name}`, 200);
+  sendToken(res, user, `welcome back ${user.fullName}`, 200);
 });
 
 exports.getMyUsers = catchError(async(req, res) =>{
