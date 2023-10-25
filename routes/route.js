@@ -5,6 +5,7 @@ const branchController = require("../controllers/branchController");
 const userRoleController = require("../controllers/userRoleController");
 const branchUserController = require("../controllers/branchUserController");
 const currencyController = require("../controllers/currencyController");
+const dailyRateController = require('../controllers/dailyRateController');
 
 const router = express.Router();
 
@@ -50,5 +51,7 @@ router.get('/currencies/:id', currencyController.getCurrencyById);
 router.put('/currencies/:id', currencyController.updateCurrencyById);
 router.delete('/currencies/:id', currencyController.deleteCurrencyById);
 
+//****Daily Rate Route****//
+router.post("/daily-rate", isAuthenticated, isMerchantAdmin, dailyRateController.setDailyRate);
 
 module.exports = router;
