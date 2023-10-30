@@ -1,11 +1,15 @@
 const express = require('express');
 const { register,login,logout, getMyProfile, changePassword,updateProfile, resetPassword, forgetPassword,addToPlaylist,removeFromPlaylist, createMerchantUser, getAllMerchant } = require('../controllers/UserController');
 const { isAuthenticated, isMerchantAdmin, isAdmin} = require('../middleware/IsAuthenticated');
+const {userAuth} = require('../middleware/userAuth');
+
+
 const branchController = require("../controllers/branchController");
 const userRoleController = require("../controllers/userRoleController");
 const branchUserController = require("../controllers/branchUserController");
 const currencyController = require("../controllers/currencyController");
 const dailyRateController = require('../controllers/dailyRateController');
+const orderController =require('../controllers/orderController');
 
 const router = express.Router();
 
@@ -53,5 +57,9 @@ router.delete('/currencies/:id', currencyController.deleteCurrencyById);
 
 //****Daily Rate Route****//
 router.post("/daily-rate", isAuthenticated, isMerchantAdmin, dailyRateController.setDailyRate);
+
+
+//****Order Route****//
+router.post("/order", userAuth,  orderController.createOrder);
 
 module.exports = router;

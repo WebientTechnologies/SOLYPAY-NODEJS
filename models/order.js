@@ -23,6 +23,11 @@ const orders = new mongoose.Schema(
       required: [true, "Sender's Address is required"],
       maxlength: 255, 
     },
+    fromBranchId:{
+        type: mongoose.Schema.Types.ObjectId,
+        required:[true, "Branch Is Required"],
+        ref: 'Branch'
+    },
     beneficiary: {
         type: String,
         required: [true, "Beneficiary is required"],
@@ -33,10 +38,16 @@ const orders = new mongoose.Schema(
         required: [true, "Beneficiary Number is required"],
         maxlength: 255
     },
-    beneficiaryAddress: {
+    beneficiaryCountry: {
         type: String,
-        required: [true, "Beneficiary Address is required"],
+        required: [true, "Beneficiary Country is required"],
         maxlength: 255
+    },
+    toBranchId:{
+        type: mongoose.Schema.Types.ObjectId,
+        required:[true, "Branch Is Required"],
+        ref: 'Branch'
+
     },
     etbAmount: {
         type: String,
