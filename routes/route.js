@@ -10,6 +10,7 @@ const branchUserController = require("../controllers/branchUserController");
 const currencyController = require("../controllers/currencyController");
 const dailyRateController = require('../controllers/dailyRateController');
 const orderController =require('../controllers/orderController');
+const userDashboardController =  require('../controllers/userDashboardController'); 
 
 const router = express.Router();
 
@@ -61,5 +62,7 @@ router.post("/daily-rate", isAuthenticated, isMerchantAdmin, dailyRateController
 
 //****Order Route****//
 router.post("/order", userAuth,  orderController.createOrder);
+router.get("/search-order", userAuth,  orderController.generateReport);
+router.get("/receivable-list", userAuth,  orderController.receivableList);
 
 module.exports = router;

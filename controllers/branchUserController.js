@@ -27,7 +27,7 @@ exports.loginBranchUser = catchError(async (req, res, next) => {
   const { userId, password } = req.body;
   if (!userId || !password)
     return next(new ErrorHandler("Please Enter All Felids", 400));
-  const user = await BranchUser.findOne({ userId }).select("+password").exec();
+  const user = await BranchUser.findOne({ userId }).select("+password").populate('branch').populate('roles', 'name').exec();
   console.log({ user });
   if (!user)
     return next(
@@ -51,3 +51,4 @@ exports.getMyUsers = catchError(async(req, res) =>{
     return res.status(200).json({users:users});
 
 })
+
