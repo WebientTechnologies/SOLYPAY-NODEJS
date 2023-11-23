@@ -17,7 +17,7 @@ exports.createOrder = catchError(async(req, res, next) =>{
     const fromBranchId = userInfo.branch._id;
 
     const branch = await Branch.findById(fromBranchId);
-    const limit = parseFloat(branch.creditLimit);
+    const limit = parseFloat(branch.availableBalance);
     const amount = parseFloat(req.body.etbAmount);
 
     console.log("Limit:", limit);
@@ -78,7 +78,7 @@ exports.createOrder = catchError(async(req, res, next) =>{
     remarks
 
   });
-    branch.creditLimit = branch.creditLimit - etbAmount;
+    branch.availableBalance = branch.creditLimit - etbAmount;
     branch.save();
     const savedOrder = await orderData.save();
 
