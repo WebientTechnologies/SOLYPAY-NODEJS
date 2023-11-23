@@ -65,6 +65,11 @@ const branches = new mongoose.Schema(
       minlength: [3, "Credit limit should be at least 3 characters long"],
       maxlength: [255, "Credit limit should not exceed 255 characters"],
     },
+    availableBalance: {
+      type: String,
+      required: false, 
+      maxlength: 255, 
+    },
     remitLimit: {
       type: String,
       required: [true, "Remit limit is required"],

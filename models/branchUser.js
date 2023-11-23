@@ -58,6 +58,23 @@ const branchUsers = new mongoose.Schema(
             type:Boolean,
             default:false
         },
+        file:{
+            Bucket:{
+                type:String,
+                required:false,
+                maxLength:255,
+            },
+            Key:{
+                type:String,
+                required:false,
+                maxLength:255,
+            },
+            Url:{
+                type:String,
+                required:false,
+                maxLength:255,
+            }
+        },
     },
     {
         timestamps:true

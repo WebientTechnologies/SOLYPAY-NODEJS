@@ -2,6 +2,7 @@ const express = require('express');
 const { register,login,logout, getMyProfile, changePassword,updateProfile, resetPassword, forgetPassword,addToPlaylist,removeFromPlaylist, createMerchantUser, getAllMerchant } = require('../controllers/UserController');
 const { isAuthenticated, isMerchantAdmin, isAdmin} = require('../middleware/IsAuthenticated');
 const {userAuth} = require('../middleware/userAuth');
+const { imageSingleUpload } = require("../middleware/multer");
 
 
 const branchController = require("../controllers/branchController");
@@ -10,6 +11,7 @@ const branchUserController = require("../controllers/branchUserController");
 const currencyController = require("../controllers/currencyController");
 const dailyRateController = require('../controllers/dailyRateController');
 const orderController =require('../controllers/orderController');
+const userDashboardController =  require('../controllers/userDashboardController'); 
 
 const router = express.Router();
 
@@ -45,6 +47,9 @@ router.put("/assign-role", isAuthenticated, isMerchantAdmin, userRoleController.
 //****Branch User Routes****//
 router.post("/create-branch-user", isAuthenticated, isMerchantAdmin, branchUserController.createUser);
 router.post("/login-branch-user", branchUserController.loginBranchUser);
+router.put("/update-my-profile", imageSingleUpload, userAuth, branchUserController.updateProfile);
+router.put("/change-my-password",  userAuth, branchUserController.changeMyPassword);
+router.put("/deactivate-account",  userAuth, branchUserController.deactivateAccount);
 router.get("/get-my-user", isAuthenticated, isMerchantAdmin, branchUserController.getMyUsers);
 
 
@@ -61,5 +66,10 @@ router.post("/daily-rate", isAuthenticated, isMerchantAdmin, dailyRateController
 
 //****Order Route****//
 router.post("/order", userAuth,  orderController.createOrder);
+router.get("/search-order", userAuth,  orderController.generateReport);
+router.get("/receivable-list", userAuth,  orderController.receivableList);
+
+//****User Dashboard****//
+router.get("/user-dashboard", userAuth, userDashboardController.userDashboard);
 
 module.exports = router;
