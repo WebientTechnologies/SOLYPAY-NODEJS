@@ -50,6 +50,7 @@ router.post("/login-branch-user", branchUserController.loginBranchUser);
 router.put("/update-my-profile", imageSingleUpload, userAuth, branchUserController.updateProfile);
 router.put("/change-my-password",  userAuth, branchUserController.changeMyPassword);
 router.put("/deactivate-account",  userAuth, branchUserController.deactivateAccount);
+router.get("/user-profile",  userAuth, branchUserController.getMyProfile);
 router.get("/get-my-user", isAuthenticated, isMerchantAdmin, branchUserController.getMyUsers);
 
 
@@ -68,6 +69,8 @@ router.post("/daily-rate", isAuthenticated, isMerchantAdmin, dailyRateController
 router.post("/order", userAuth,  orderController.createOrder);
 router.get("/search-order", userAuth,  orderController.generateReport);
 router.get("/receivable-list", userAuth,  orderController.receivableList);
+router.get("/country",userAuth, orderController.getCountry);
+router.get("/city/:country", userAuth, orderController.getCity);
 
 //****User Dashboard****//
 router.get("/user-dashboard", userAuth, userDashboardController.userDashboard);

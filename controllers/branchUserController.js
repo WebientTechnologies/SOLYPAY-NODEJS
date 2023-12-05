@@ -63,6 +63,14 @@ exports.getMyUsers = catchError(async(req, res) =>{
 
 });
 
+exports.getMyProfile = catchError(async(req, res) =>{
+  const authenticatedUser = req.branchUser;
+  const id = authenticatedUser._id;
+  const user = await BranchUser.findById(id).populate('branch').populate('roles', 'name').exec();
+  return res.status(200).json({user:user});
+
+});
+
 
 exports.changeMyPassword = catchError(async (req, res, next) => {
   const authenticatedUser = req.branchUser;
