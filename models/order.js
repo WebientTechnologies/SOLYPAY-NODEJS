@@ -43,6 +43,11 @@ const orders = new mongoose.Schema(
         required: [true, "Beneficiary Country is required"],
         maxlength: 255
     },
+    beneficiaryCity: {
+        type: String,
+        required: [true, "Beneficiary City is required"],
+        maxlength: 255
+    },
     toBranchId:{
         type: mongoose.Schema.Types.ObjectId,
         required:[true, "Branch Is Required"],

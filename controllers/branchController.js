@@ -1,10 +1,21 @@
 const Branch = require("../models/branch");
 const { catchError } = require("../middleware/CatchError");
+const CountryCity = require("../models/countryCity");
 const ErrorHandler = require("../utils/ErrorHandler");
 
 exports.createBranch = catchError(async (req, res, next) => {
   const branch = new Branch({ ...req.body, merchantAdmin: req.user._id });
   await branch.save();
+  const loc = await CountryCity.find({ country: req.body.country, city: req.body.city });
+
+  if (loc.length === 0) {
+    const newLoc = new CountryCity({
+      merchantAdmin: req.user._id,
+      country: req.body.country,
+      city: req.body.city
+    });
+    await newLoc.save();
+  }
   res.status(201).json({ message: "Branch created successfully", branch });
 });
 

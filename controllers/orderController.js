@@ -1,15 +1,17 @@
 const Order = require('../models/order');
 const Branch = require('../models/branch');
 const BranchUser = require('../models/branchUser');
+const CountryCity = require("../models/countryCity");
 const DailyRate = require('../models/dailyRate');
 const {catchError} = require('../middleware/CatchError');
 const ErrorHandler = require("../utils/ErrorHandler");
+const countryCity = require('../models/countryCity');
 
 exports.createOrder = catchError(async(req, res, next) =>{
     const authenticatedUser = req.branchUser;
 
     const branchUserId = authenticatedUser._id;
-    const {sender, senderPhone, senderAddress, beneficiary, beneficiaryPhone, beneficiaryCountry, toBranchId, etbAmount, etbComm, usdAmount, usdComm, commPercentage, exRate, mode, remarks} = req.body;
+    const {sender, senderPhone, senderAddress, beneficiary, beneficiaryPhone, beneficiaryCountry, beneficiaryCity, toBranchId, etbAmount, etbComm, usdAmount, usdComm, commPercentage, exRate, mode, remarks} = req.body;
 
     const userInfo = await BranchUser.findById(branchUserId).populate('branch', 'branch');
     const branchName = userInfo.branch.branch; 
@@ -65,6 +67,7 @@ exports.createOrder = catchError(async(req, res, next) =>{
     beneficiary,
     beneficiaryPhone,
     beneficiaryCountry,
+    beneficiaryCity,
     toBranchId,
     etbAmount,
     etbComm, 
@@ -164,4 +167,24 @@ exports.receivableList = catchError( async (req, res, next) => {
   // Return the report as JSON
   res.status(200).json({ report });
 
+});
+
+exports.getCountry = catchError(async(req, res) =>{
+  const authenticatedUser = req.branchUser;
+  const user = authenticatedUser._id;
+  const userInfo = await BranchUser.findById(user);
+  const merchantAdmin = userInfo.merchantAdmin;
+  const countries = await CountryCity.distinct('country', { merchantAdmin });
+  res.status(200).json({countries});
+});
+
+
+exports.getCity = catchError(async(req, res) =>{
+    const authenticatedUser = req.branchUser;
+    const user = authenticatedUser._id;
+    const userInfo = await BranchUser.findById(user);
+    const merchantAdmin = userInfo.merchantAdmin;
+    const country = req.params.country;
+    const cities = await CountryCity.distinct('city', { merchantAdmin, country });
+    res.status(200).json({cities});
 });
