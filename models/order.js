@@ -54,17 +54,17 @@ const orders = new mongoose.Schema(
         ref: 'Branch'
 
     },
-    etbAmount: {
+    othAmount: {
         type: String,
         required: [true, "ETB Amount is required"],
         maxlength: 255
     },
-    etbComm: {
+    othComm: {
         type: String,
         required: false,
         maxlength: 255
     },
-    etbTotal: {
+    othTotal: {
         type: String,
         required: false,
         maxlength: 255
