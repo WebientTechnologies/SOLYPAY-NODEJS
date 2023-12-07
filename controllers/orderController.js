@@ -11,7 +11,7 @@ exports.createOrder = catchError(async(req, res, next) =>{
     const authenticatedUser = req.branchUser;
 
     const branchUserId = authenticatedUser._id;
-    const {sender, senderPhone, senderAddress, beneficiary, beneficiaryPhone, beneficiaryCountry, beneficiaryCity, toBranchId, etbAmount, etbComm, usdAmount, usdComm, commPercentage, exRate, mode, remarks} = req.body;
+    const {sender, senderPhone, senderAddress, beneficiary, beneficiaryPhone, beneficiaryCountry, beneficiaryCity, toBranchId, othAmount, othComm, usdAmount, usdComm, commPercentage, exRate, mode, remarks} = req.body;
 
     const userInfo = await BranchUser.findById(branchUserId).populate('branch', 'branch');
     const branchName = userInfo.branch.branch; 
@@ -20,13 +20,13 @@ exports.createOrder = catchError(async(req, res, next) =>{
 
     const branch = await Branch.findById(fromBranchId);
     const limit = parseFloat(branch.availableBalance);
-    const amount = parseFloat(req.body.etbAmount);
+    const amount = parseFloat(req.body.othAmount);
 
     console.log("Limit:", limit);
-    console.log("etbAmount:", amount);
+    console.log("othAmount:", amount);
 
     if (isNaN(limit) || isNaN(amount)) {
-        return next(new ErrorHandler('Invalid limit or etbAmount', 400));
+        return next(new ErrorHandler('Invalid limit or othAmount', 400));
     }
 
     if (limit < amount) {
@@ -50,8 +50,8 @@ exports.createOrder = catchError(async(req, res, next) =>{
     }
   }
   const remitNumber = branchName + newSerialNumber;
-  const etbcommission = etbAmount * etbComm /100;
-  const etbTotal = etbAmount + etbcommission;
+  const othcommission = othAmount * othComm /100;
+  const othTotal = othAmount + othcommission;
   
   const usdcommission = usdAmount * usdComm /100;
   const usdTotal = usdAmount + usdcommission;
@@ -69,9 +69,9 @@ exports.createOrder = catchError(async(req, res, next) =>{
     beneficiaryCountry,
     beneficiaryCity,
     toBranchId,
-    etbAmount,
-    etbComm, 
-    etbTotal,
+    othAmount,
+    othComm, 
+    othTotal,
     usdAmount, 
     usdComm, 
     usdTotal,
@@ -81,7 +81,7 @@ exports.createOrder = catchError(async(req, res, next) =>{
     remarks
 
   });
-    branch.availableBalance = branch.creditLimit - etbAmount;
+    branch.availableBalance = branch.creditLimit - othAmount;
     branch.save();
     const savedOrder = await orderData.save();
 
