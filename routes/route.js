@@ -32,7 +32,7 @@ router.route('/reset-password/:token').post(resetPassword);
 /*****branch routs here *********/
 
 router.post("/branches", isAuthenticated,isMerchantAdmin, branchController.createBranch);
-router.get("/branches",isAuthenticated,isMerchantAdmin,  branchController.getAllBranches);
+router.get("/branches", branchController.getAllBranches);
 router.get("/branches/:id",isAuthenticated,isMerchantAdmin,  branchController.getBranchById);
 router.put("/branches/:id",isAuthenticated,isMerchantAdmin,  branchController.updateBranchById);
 router.delete("/branches/:id",isAuthenticated,isMerchantAdmin,  branchController.deleteBranchById);
